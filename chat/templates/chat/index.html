@@ -64,29 +64,28 @@
             z-index: 10;
         }
 
-        .btn-next {
-            background: none;
-            border: none;
+        #btn-next {
+            background: var(--bg-msg-other);
             color: var(--text-main);
+            border: none;
+            height: 45px;
+            padding: 0 15px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 5px;
-            transition: opacity 0.2s;
+            transition: transform 0.2s, opacity 0.2s, background 0.2s;
+            flex-shrink: 0;
+            margin-right: 10px;
         }
         
-        .btn-next:hover { opacity: 0.7; }
+        #btn-next:hover { opacity: 0.8; transform: scale(1.05); }
+        #btn-next:active { transform: scale(0.95); }
         
-        .btn-next svg {
-            width: 20px;
-            height: 20px;
-            fill: none;
-            stroke: currentColor;
-            stroke-width: 2.5;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
+
 
         .stranger-info {
             display: flex;
@@ -283,11 +282,6 @@
         
         <!-- HEADER -->
         <div class="chat-header">
-            <!-- Used as Next / Skip button -->
-            <button class="btn-next" id="btn-next" title="Skip to next person">
-                <svg viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7"/></svg>
-            </button>
-            
             <div class="stranger-info">
                 <img src="https://loremflickr.com/150/150/cute,animal" alt="Stranger">
                 <div class="stranger-details">
@@ -305,9 +299,13 @@
         <!-- INPUT -->
         <div class="input-area-container">
             <div class="input-wrapper">
-                <textarea id="chat-message-input" placeholder="Write a message..." disabled></textarea>
+                <button id="btn-next" title="Find Next Stranger">
+                    Stop
+                </button>
                 
-                <button id="chat-message-submit" disabled>
+                <textarea id="chat-message-input" placeholder="Write a message..."></textarea>
+                
+                <button id="chat-message-submit">
                     <svg viewBox="0 0 24 24"><path d="M3 3l19 9-19 9 3-9-3-9z"/></svg>
                 </button>
             </div>
@@ -360,28 +358,29 @@
 
         function setUIState(state) {
             lastSender = null; // reset grouping
+            // Keep input enabled always!
+            messageInput.disabled = false;
+            messageSubmit.disabled = false;
+            
             if (state === 'waiting') {
                 isConnectedToStranger = false;
                 statusIndicator.className = 'status-dot';
                 statusText.textContent = "Waiting for match...";
-                messageInput.disabled = true;
-                messageInput.placeholder = 'Waiting for a stranger...';
-                messageSubmit.disabled = true;
+                messageInput.placeholder = 'Waiting... (Type & Send to find next)';
+                btnNext.textContent = 'Stop';
             } else if (state === 'connected') {
                 isConnectedToStranger = true;
                 statusIndicator.className = 'status-dot connected';
                 statusText.textContent = "Online";
-                messageInput.disabled = false;
                 messageInput.placeholder = 'Write a message...';
-                messageSubmit.disabled = false;
                 messageInput.focus();
+                btnNext.textContent = 'Disconnect';
             } else if (state === 'disconnected') {
                 isConnectedToStranger = false;
                 statusIndicator.className = 'status-dot disconnected';
                 statusText.textContent = "Disconnected";
-                messageInput.disabled = true;
-                messageInput.placeholder = 'Stranger left the chat.';
-                messageSubmit.disabled = true;
+                messageInput.placeholder = 'Stranger left. (Type & Send to find next)';
+                btnNext.textContent = 'Next';
             }
         }
 
@@ -454,22 +453,35 @@
 
         messageSubmit.onclick = function(e) {
             const message = messageInput.value.trim();
-            if (message && chatSocket && chatSocket.readyState === WebSocket.OPEN && isConnectedToStranger) {
-                chatSocket.send(JSON.stringify({
-                    'action': 'message',
-                    'message': message
-                }));
-                messageInput.value = '';
+            if (message && chatSocket && chatSocket.readyState === WebSocket.OPEN) {
+                if (isConnectedToStranger) {
+                    chatSocket.send(JSON.stringify({
+                        'action': 'message',
+                        'message': message
+                    }));
+                    messageInput.value = '';
+                } else {
+                    // Automatically trigger 'next' if trying to send while disconnected
+                    btnNext.click();
+                    // We don't clear the input so they can send it to the new stranger when connected!
+                }
             }
         };
         
         btnNext.onclick = function(e) {
             if (chatSocket && chatSocket.readyState === WebSocket.OPEN) {
-                chatLog.innerHTML = '';
-                lastSender = null;
-                chatSocket.send(JSON.stringify({
-                    'action': 'next'
-                }));
+                if (isConnectedToStranger) {
+                    // Tap 1: Disconnect from current chat
+                    chatSocket.send(JSON.stringify({ 'action': 'disconnect' }));
+                } else if (btnNext.textContent === 'Stop') {
+                    // Stop searching
+                    chatSocket.send(JSON.stringify({ 'action': 'disconnect' }));
+                } else {
+                    // Tap 2: Find next
+                    chatLog.innerHTML = '';
+                    lastSender = null;
+                    chatSocket.send(JSON.stringify({ 'action': 'next' }));
+                }
             }
         }
     </script>

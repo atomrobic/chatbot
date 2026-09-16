@@ -120,6 +120,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 
 # Email
@@ -136,7 +137,10 @@ if os.environ.get('REDIS_URL'):
         'default': {
             'BACKEND': 'channels_redis.core.RedisChannelLayer',
             'CONFIG': {
-                "hosts": [os.environ.get('REDIS_URL')],
+                "hosts": [{
+                    "address": os.environ.get('REDIS_URL'),
+                    "ssl_cert_reqs": None,
+                }],
             },
         },
     }

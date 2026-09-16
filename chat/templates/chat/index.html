@@ -7,20 +7,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-body: #020617;
-            --bg-chat: #0f172a;
-            --bg-sidebar: #020617;
-            --text-main: #f8fafc;
-            --text-muted: #cbd5e1;
-            --text-light: #94a3b8;
-            --accent-blue: #6366f1;
-            --accent-hover: #4f46e5;
-            --msg-stranger-bg: #1e293b;
-            --msg-stranger-text: #f8fafc;
-            --msg-self-bg: #6366f1;
-            --msg-self-text: #ffffff;
-            --border-color: #1e293b;
-            --online-color: #10b981;
+            --bg-body: #323544;
+            --bg-app: #282a36;
+            --bg-msg-other: #353846;
+            --bg-msg-self: #21232d;
+            --bg-input: #1a1c24;
+            --text-main: #e2e4ec;
+            --text-muted: #9ba0b5;
+            --accent-pink: #f93c6e;
         }
 
         * {
@@ -36,153 +30,69 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
             color: var(--text-main);
         }
 
         .app-container {
             width: 100%;
-            max-width: 1400px;
-            height: 95vh;
-            background: var(--bg-sidebar);
-            border-radius: 20px;
-            display: flex;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.05);
-            overflow: hidden;
-        }
-
-        /* --- LEFT SIDEBAR (MOCK) --- */
-        .sidebar-left {
-            width: 320px;
-            background: var(--bg-sidebar);
-            border-right: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-        }
-
-        .my-profile {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-
-        .my-profile img {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .my-profile .info h3 {
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--accent-blue);
-        }
-
-        .my-profile .info p {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
-
-        .search-bar {
-            background: var(--bg-chat);
-            border-radius: 30px;
-            padding: 10px 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 25px;
-            border: 1px solid var(--border-color);
-        }
-        
-        .search-bar input {
-            background: transparent;
-            border: none;
-            outline: none;
-            font-size: 0.9rem;
-            width: 100%;
-            color: var(--text-main);
-        }
-
-        .search-bar svg {
-            width: 18px;
-            height: 18px;
-            fill: var(--text-light);
-        }
-
-        .contact-list {
-            flex: 1;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .contact-list::-webkit-scrollbar { width: 0; }
-
-        .contact {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 10px;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: background 0.2s;
-            position: relative;
-        }
-
-        .contact:hover { background: rgba(255, 255, 255, 0.05); }
-
-        .contact img {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .contact .details { flex: 1; }
-        .contact .details h4 { font-size: 0.95rem; font-weight: 600; color: var(--accent-blue); margin-bottom: 3px; }
-        .contact .details p { font-size: 0.8rem; color: var(--text-light); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px; }
-        
-        .contact .meta {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 5px;
-        }
-        .contact .meta span { font-size: 0.7rem; color: var(--text-light); }
-        .contact .meta .badge {
-            background: var(--accent-blue);
-            color: white;
-            font-size: 0.7rem;
-            padding: 2px 6px;
-            border-radius: 10px;
-            font-weight: 600;
-        }
-
-        /* --- MAIN CHAT AREA --- */
-        .main-chat {
-            flex: 1;
-            background: var(--bg-chat);
+            max-width: 420px;
+            height: 100vh;
+            background: var(--bg-app);
             display: flex;
             flex-direction: column;
             position: relative;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
         }
 
+        @media (min-width: 480px) {
+            .app-container {
+                height: 90vh;
+                max-height: 850px;
+                border-radius: 24px;
+                overflow: hidden;
+            }
+        }
+
+        /* --- HEADER --- */
         .chat-header {
-            padding: 20px 30px;
+            padding: 20px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            border-bottom: 1px solid var(--border-color);
+            gap: 15px;
+            background: var(--bg-app);
+            position: relative;
+            z-index: 10;
+        }
+
+        .btn-next {
+            background: none;
+            border: none;
+            color: var(--text-main);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 5px;
+            transition: opacity 0.2s;
+        }
+        
+        .btn-next:hover { opacity: 0.7; }
+        
+        .btn-next svg {
+            width: 20px;
+            height: 20px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
         }
 
         .stranger-info {
             display: flex;
             align-items: center;
             gap: 15px;
+            flex: 1;
         }
 
         .stranger-info img {
@@ -192,178 +102,123 @@
             object-fit: cover;
         }
 
-        .stranger-info h2 {
+        .stranger-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stranger-details h2 {
             font-size: 1.1rem;
             font-weight: 600;
-            color: var(--accent-blue);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         .status-dot {
-            width: 10px;
-            height: 10px;
-            background-color: #fbbf24; /* yellow */
+            width: 8px;
+            height: 8px;
+            background-color: #fbbf24;
             border-radius: 50%;
-            transition: all 0.3s ease;
         }
-        .status-dot.connected { background-color: var(--online-color); }
+        .status-dot.connected { background-color: #10b981; }
         .status-dot.disconnected { background-color: #ef4444; }
 
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        
-        .header-actions svg {
-            width: 22px;
-            height: 22px;
-            stroke: var(--text-light);
-            fill: none;
-            stroke-width: 2;
-            cursor: pointer;
+        .stranger-details p {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 2px;
         }
 
-        .header-actions button {
-            background: var(--accent-blue);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .header-actions button:hover { background: var(--accent-hover); }
-
+        /* --- CHAT LOG --- */
         .chat-log {
             flex: 1;
-            padding: 30px;
+            padding: 20px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
             gap: 20px;
+            scroll-behavior: smooth;
         }
 
-        .chat-log::-webkit-scrollbar { width: 6px; }
-        .chat-log::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
+        .chat-log::-webkit-scrollbar { width: 4px; }
+        .chat-log::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
 
-        .message-wrapper {
+        .message-group {
             display: flex;
-            align-items: flex-end;
-            gap: 10px;
-            max-width: 65%;
+            flex-direction: column;
+            gap: 8px;
+            max-width: 85%;
             animation: fadeIn 0.3s ease-out forwards;
         }
 
-        .message-wrapper.self {
-            align-self: flex-end;
-            flex-direction: row-reverse;
-        }
-
-        .message-wrapper.other {
+        .message-group.other {
             align-self: flex-start;
         }
+
+        .message-group.self {
+            align-self: flex-end;
+            align-items: flex-end;
+        }
         
-        .message-wrapper.system {
+        .message-group.system {
             align-self: center;
             max-width: 100%;
-            margin: 10px 0;
+            align-items: center;
         }
 
-        .message-wrapper img {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            object-fit: cover;
-            flex-shrink: 0;
+        .sender-name {
+            font-size: 0.85rem;
+            color: var(--text-main);
+            margin-bottom: 2px;
+            padding: 0 5px;
         }
 
         .message {
-            padding: 12px 18px;
+            padding: 14px 18px;
+            border-radius: 20px;
             font-size: 0.95rem;
             line-height: 1.5;
             word-break: break-word;
-            position: relative;
-        }
-
-        .self .message {
-            background-color: var(--msg-self-bg);
-            color: var(--msg-self-text);
-            border-radius: 18px 18px 0 18px;
-            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
         }
 
         .other .message {
-            background-color: var(--msg-stranger-bg);
-            color: var(--msg-stranger-text);
-            border-radius: 18px 18px 18px 0;
+            background-color: var(--bg-msg-other);
+            color: var(--text-main);
+        }
+
+        .self .message {
+            background-color: var(--bg-msg-self);
+            color: var(--text-main);
         }
 
         .system .message {
             background-color: transparent;
-            color: var(--text-light);
-            font-size: 0.85rem;
-            font-style: italic;
-            text-align: center;
-        }
-        
-        .date-separator {
-            text-align: center;
-            position: relative;
-            margin: 10px 0;
-            color: var(--text-light);
+            color: var(--text-muted);
             font-size: 0.8rem;
+            font-style: italic;
+            padding: 4px 12px;
         }
-        .date-separator::before, .date-separator::after {
-            content: "";
-            position: absolute;
-            top: 50%;
-            width: 40%;
-            height: 1px;
-            background: var(--border-color);
-        }
-        .date-separator::before { left: 0; }
-        .date-separator::after { right: 0; }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Input Area */
+        /* --- INPUT AREA --- */
         .input-area-container {
-            padding: 20px 30px;
-            background: var(--msg-stranger-bg); /* light blue bottom band */
+            padding: 15px 20px 25px;
+            background: var(--bg-app);
         }
 
         .input-wrapper {
-            background: var(--bg-body);
-            border-radius: 50px;
+            background: var(--bg-input);
+            border-radius: 16px;
             display: flex;
-            align-items: center;
-            padding: 5px 10px 5px 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            gap: 15px;
-        }
-
-        .icon-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .icon-btn svg {
-            width: 22px;
-            height: 22px;
-            stroke: var(--accent-blue);
-            fill: none;
-            stroke-width: 2;
+            align-items: flex-end;
+            padding: 10px;
+            min-height: 120px;
+            position: relative;
         }
 
         #chat-message-input {
@@ -371,36 +226,46 @@
             background: transparent;
             border: none;
             outline: none;
-            padding: 12px 0;
+            padding: 10px;
             font-size: 0.95rem;
             color: var(--text-main);
+            resize: none;
+            height: 100%;
+            align-self: stretch;
+            line-height: 1.4;
         }
-        #chat-message-input::placeholder { color: var(--text-light); }
+
+        #chat-message-input::placeholder { color: var(--text-muted); }
         #chat-message-input:disabled { opacity: 0.6; cursor: not-allowed; }
 
-        .actions-right {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
         #chat-message-submit {
-            background: var(--accent-blue);
+            background: var(--accent-pink);
             color: white;
             border: none;
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.2s;
+            transition: transform 0.2s, opacity 0.2s;
+            flex-shrink: 0;
+            margin-left: 10px;
         }
 
         #chat-message-submit:disabled {
-            background: var(--text-light);
+            background: var(--bg-msg-other);
             cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        #chat-message-submit:not(:disabled):hover {
+            transform: scale(1.05);
+        }
+        
+        #chat-message-submit:not(:disabled):active {
+            transform: scale(0.95);
         }
 
         #chat-message-submit svg {
@@ -408,283 +273,43 @@
             height: 20px;
             fill: white;
             stroke: none;
-            transform: translateX(-1px);
-        }
-
-        /* --- RIGHT SIDEBAR (MOCK) --- */
-        .sidebar-right {
-            width: 320px;
-            background: var(--bg-sidebar);
-            border-left: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            padding: 30px 20px;
-            align-items: center;
-        }
-
-        .sidebar-right .search-bar {
-            width: 100%;
-            margin-bottom: 40px;
-        }
-
-        .stranger-profile-large {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .stranger-profile-large img {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-bottom: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        .stranger-profile-large h2 { font-size: 1.1rem; color: var(--text-main); margin-bottom: 5px; }
-        .stranger-profile-large p { font-size: 0.85rem; color: var(--text-light); }
-
-        .action-buttons {
-            display: flex;
-            gap: 20px;
-            width: 100%;
-            justify-content: center;
-            margin-bottom: 40px;
-        }
-
-        .action-btn {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-        }
-        
-        .action-btn .icon-circle {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: var(--msg-stranger-bg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .action-btn .icon-circle svg {
-            width: 22px;
-            height: 22px;
-            fill: var(--accent-blue);
-        }
-        
-        .action-btn span { font-size: 0.75rem; color: var(--text-main); }
-
-        .attachments-section {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .attachments-section h4 { font-size: 0.9rem; color: var(--text-main); margin-bottom: 5px; }
-
-        .attachment-icons {
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .att-icon {
-            background: var(--msg-stranger-bg);
-            padding: 10px;
-            border-radius: 12px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 5px;
-            color: var(--accent-blue);
-            font-size: 0.7rem;
-            font-weight: 600;
-        }
-        
-        .att-icon svg { width: 24px; height: 24px; fill: var(--accent-blue); }
-
-        .view-all {
-            background: transparent;
-            border: 1px solid var(--accent-blue);
-            color: var(--accent-blue);
-            border-radius: 20px;
-            padding: 8px;
-            font-size: 0.8rem;
-            font-weight: 500;
-            text-align: center;
-            margin-top: 10px;
-            cursor: pointer;
-        }
-
-        /* Responsive */
-        @media (max-width: 1024px) {
-            .sidebar-right { display: none; }
-        }
-        @media (max-width: 768px) {
-            .sidebar-left { display: none; }
-            .app-container { height: 100vh; border-radius: 0; }
+            transform: translateX(1px);
         }
     </style>
 </head>
 <body>
 
     <div class="app-container">
-        <!-- LEFT SIDEBAR -->
-        <div class="sidebar-left">
-            <div class="my-profile">
-                <img src="https://i.pravatar.cc/150?u=me" alt="Me">
-                <div class="info">
-                    <h3>My Profile</h3>
-                    <p>Ready to chat</p>
-                </div>
-            </div>
-            <div class="search-bar">
-                <svg viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                <input type="text" placeholder="Search Here...">
-            </div>
+        
+        <!-- HEADER -->
+        <div class="chat-header">
+            <!-- Used as Next / Skip button -->
+            <button class="btn-next" id="btn-next" title="Skip to next person">
+                <svg viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7"/></svg>
+            </button>
             
-            <div class="contact-list">
-                <!-- Mock Contacts -->
-                <div class="contact">
-                    <img src="https://i.pravatar.cc/150?u=1" alt="User">
-                    <div class="details">
-                        <h4>Lisa Roy</h4>
-                        <p>Hi, are you Available Tomorrow?</p>
-                    </div>
-                    <div class="meta">
-                        <span>10:35 AM</span>
-                        <div class="badge">1</div>
-                    </div>
-                </div>
-                <div class="contact">
-                    <img src="https://i.pravatar.cc/150?u=2" alt="User">
-                    <div class="details">
-                        <h4>Jamie Taylor</h4>
-                        <p>Nice One. Will do it tomorrow</p>
-                    </div>
-                    <div class="meta">
-                        <span>10:35 AM</span>
-                        <div class="badge">3</div>
-                    </div>
-                </div>
-                <div class="contact">
-                    <img src="https://i.pravatar.cc/150?u=3" alt="User">
-                    <div class="details">
-                        <h4>Jason Roy</h4>
-                        <p>That's Great. I am looking forward...</p>
-                    </div>
-                    <div class="meta">
-                        <span>10:35 AM</span>
-                    </div>
-                </div>
-                <div class="contact">
-                    <img src="https://i.pravatar.cc/150?u=4" alt="User">
-                    <div class="details">
-                        <h4>Amy Frost</h4>
-                        <p>Hi, will you start working on the app...</p>
-                    </div>
-                    <div class="meta">
-                        <span>10:35 AM</span>
-                    </div>
-                </div>
-                <div class="contact">
-                    <img src="https://i.pravatar.cc/150?u=5" alt="User">
-                    <div class="details">
-                        <h4>Paul Wilson</h4>
-                        <p>See you tomorrow champ</p>
-                    </div>
-                    <div class="meta">
-                        <span>10:35 AM</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- MAIN CHAT -->
-        <div class="main-chat">
-            <div class="chat-header">
-                <div class="stranger-info">
-                    <img src="https://i.pravatar.cc/150?u=stranger" alt="Stranger">
+            <div class="stranger-info">
+                <img src="https://loremflickr.com/150/150/cute,animal" alt="Stranger">
+                <div class="stranger-details">
                     <h2>Stranger <div id="status-indicator" class="status-dot"></div></h2>
-                </div>
-                <div class="header-actions">
-                    <svg viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                    <svg viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
-                    <svg viewBox="0 0 24 24"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-                    <button id="btn-next">Next / New</button>
-                </div>
-            </div>
-            
-            <div class="chat-log" id="chat-log">
-                <div class="date-separator">Today</div>
-                <!-- Messages will appear here -->
-            </div>
-            
-            <div class="input-area-container">
-                <div class="input-wrapper">
-                    <button class="icon-btn">
-                        <svg viewBox="0 0 24 24"><path d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
-                    </button>
-                    
-                    <input id="chat-message-input" type="text" placeholder="Write Something..." autocomplete="off" disabled>
-                    
-                    <div class="actions-right">
-                        <button class="icon-btn"><svg viewBox="0 0 24 24"><path d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg></button>
-                        <button class="icon-btn"><svg viewBox="0 0 24 24"><path d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg></button>
-                        <button class="icon-btn"><svg viewBox="0 0 24 24"><path d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></button>
-                        
-                        <button id="chat-message-submit" disabled>
-                            <svg viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
-                        </button>
-                    </div>
+                    <p id="status-text">Anonymous Chat</p>
                 </div>
             </div>
         </div>
-
-        <!-- RIGHT SIDEBAR -->
-        <div class="sidebar-right">
-            <div class="search-bar">
-                <svg viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                <input type="text" placeholder="Search Here...">
-            </div>
-
-            <div class="stranger-profile-large">
-                <img src="https://i.pravatar.cc/150?u=stranger" alt="Stranger">
-                <h2>Stranger</h2>
-                <p>Anonymous Chat</p>
-            </div>
-
-            <div class="action-buttons">
-                <div class="action-btn">
-                    <div class="icon-circle">
-                        <svg viewBox="0 0 24 24"><path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
-                    </div>
-                    <span>Chat</span>
-                </div>
-                <div class="action-btn">
-                    <div class="icon-circle">
-                        <svg viewBox="0 0 24 24"><path d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-                    </div>
-                    <span>Video Call</span>
-                </div>
-            </div>
-
-            <div class="attachments-section">
-                <h4>Attachments</h4>
-                <div class="attachment-icons">
-                    <div class="att-icon"><svg viewBox="0 0 24 24"><path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>PDF</div>
-                    <div class="att-icon"><svg viewBox="0 0 24 24"><path d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>VIDEO</div>
-                    <div class="att-icon"><svg viewBox="0 0 24 24"><path d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/></svg>MP3</div>
-                    <div class="att-icon"><svg viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>IMAGE</div>
-                </div>
-                <div class="view-all">View All</div>
+        
+        <!-- CHAT LOG -->
+        <div class="chat-log" id="chat-log">
+            <!-- Messages will appear here -->
+        </div>
+        
+        <!-- INPUT -->
+        <div class="input-area-container">
+            <div class="input-wrapper">
+                <textarea id="chat-message-input" placeholder="Write a message..." disabled></textarea>
+                
+                <button id="chat-message-submit" disabled>
+                    <svg viewBox="0 0 24 24"><path d="M3 3l19 9-19 9 3-9-3-9z"/></svg>
+                </button>
             </div>
         </div>
     </div>
@@ -692,12 +317,14 @@
     <script>
         let chatSocket = null;
         let isConnectedToStranger = false;
+        let lastSender = null;
 
         const chatLog = document.getElementById('chat-log');
         const messageInput = document.getElementById('chat-message-input');
         const messageSubmit = document.getElementById('chat-message-submit');
         const btnNext = document.getElementById('btn-next');
         const statusIndicator = document.getElementById('status-indicator');
+        const statusText = document.getElementById('status-text');
 
         function connectWebSocket() {
             const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
@@ -732,22 +359,26 @@
         }
 
         function setUIState(state) {
+            lastSender = null; // reset grouping
             if (state === 'waiting') {
                 isConnectedToStranger = false;
-                statusIndicator.className = 'status-dot'; // yellow
+                statusIndicator.className = 'status-dot';
+                statusText.textContent = "Waiting for match...";
                 messageInput.disabled = true;
                 messageInput.placeholder = 'Waiting for a stranger...';
                 messageSubmit.disabled = true;
             } else if (state === 'connected') {
                 isConnectedToStranger = true;
-                statusIndicator.className = 'status-dot connected'; // green
+                statusIndicator.className = 'status-dot connected';
+                statusText.textContent = "Online";
                 messageInput.disabled = false;
-                messageInput.placeholder = 'Write Something...';
+                messageInput.placeholder = 'Write a message...';
                 messageSubmit.disabled = false;
                 messageInput.focus();
             } else if (state === 'disconnected') {
                 isConnectedToStranger = false;
-                statusIndicator.className = 'status-dot disconnected'; // red
+                statusIndicator.className = 'status-dot disconnected';
+                statusText.textContent = "Disconnected";
                 messageInput.disabled = true;
                 messageInput.placeholder = 'Stranger left the chat.';
                 messageSubmit.disabled = true;
@@ -757,39 +388,52 @@
         function appendChatMessage(sender, message) {
             const isSelf = sender === 'You';
             
-            const wrapper = document.createElement('div');
-            wrapper.className = `message-wrapper ${isSelf ? 'self' : 'other'}`;
+            // Check if we can append to the last message group
+            if (lastSender === sender) {
+                const lastGroup = chatLog.lastElementChild;
+                if (lastGroup && !lastGroup.classList.contains('system')) {
+                    const msgEl = document.createElement('div');
+                    msgEl.className = 'message';
+                    msgEl.textContent = message;
+                    lastGroup.appendChild(msgEl);
+                    scrollToBottom();
+                    return;
+                }
+            }
             
-            // Add Avatar
-            const avatar = document.createElement('img');
-            avatar.src = isSelf ? 'https://i.pravatar.cc/150?u=me' : 'https://i.pravatar.cc/150?u=stranger';
+            // Create a new group
+            lastSender = sender;
+            
+            const group = document.createElement('div');
+            group.className = `message-group ${isSelf ? 'self' : 'other'}`;
+            
+            if (!isSelf) {
+                const nameEl = document.createElement('div');
+                nameEl.className = 'sender-name';
+                nameEl.textContent = 'Stranger';
+                group.appendChild(nameEl);
+            }
             
             const msgEl = document.createElement('div');
             msgEl.className = 'message';
             msgEl.textContent = message;
             
-            if (isSelf) {
-                wrapper.appendChild(msgEl);
-                wrapper.appendChild(avatar);
-            } else {
-                wrapper.appendChild(avatar);
-                wrapper.appendChild(msgEl);
-            }
-            
-            chatLog.appendChild(wrapper);
+            group.appendChild(msgEl);
+            chatLog.appendChild(group);
             scrollToBottom();
         }
 
         function appendSystemMessage(message) {
-            const wrapper = document.createElement('div');
-            wrapper.className = 'message-wrapper system';
+            lastSender = null;
+            const group = document.createElement('div');
+            group.className = 'message-group system';
             
             const msgEl = document.createElement('div');
             msgEl.className = 'message';
             msgEl.textContent = message;
             
-            wrapper.appendChild(msgEl);
-            chatLog.appendChild(wrapper);
+            group.appendChild(msgEl);
+            chatLog.appendChild(group);
             scrollToBottom();
         }
 
@@ -801,11 +445,12 @@
         connectWebSocket();
 
         // Event Listeners
-        messageInput.onkeyup = function(e) {
-            if (e.keyCode === 13) {  // enter
+        messageInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
                 messageSubmit.click();
             }
-        };
+        });
 
         messageSubmit.onclick = function(e) {
             const message = messageInput.value.trim();
@@ -820,8 +465,8 @@
         
         btnNext.onclick = function(e) {
             if (chatSocket && chatSocket.readyState === WebSocket.OPEN) {
-                // Keep the Today separator but clear other messages
-                chatLog.innerHTML = '<div class="date-separator">Today</div>';
+                chatLog.innerHTML = '';
+                lastSender = null;
                 chatSocket.send(JSON.stringify({
                     'action': 'next'
                 }));

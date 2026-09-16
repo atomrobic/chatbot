@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stranger Chat</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --container-bg: rgba(30, 41, 59, 0.7);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent: #6366f1;
+            --accent-hover: #4f46e5;
+            --msg-self: #4f46e5;
+            --msg-other: #334155;
+            --sys-msg: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: radial-gradient(circle at 50% -20%, #312e81, #0f172a 60%);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .chat-app {
+            width: 100%;
+            max-width: 900px;
+            height: 90vh;
+            max-height: 800px;
+            background: var(--container-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header {
+            padding: 20px 30px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(15, 23, 42, 0.5);
+        }
+
+        .header h1 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            background-color: #fbbf24; /* yellow for waiting by default */
+            border-radius: 50%;
+            box-shadow: 0 0 8px #fbbf24;
+            transition: all 0.3s ease;
+        }
+        .status-dot.connected {
+            background-color: #10b981;
+            box-shadow: 0 0 10px #10b981;
+        }
+        .status-dot.disconnected {
+            background-color: #ef4444;
+            box-shadow: 0 0 10px #ef4444;
+        }
+
+        .btn-next {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid var(--border-color);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-next:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .chat-log {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            scroll-behavior: smooth;
+        }
+
+        /* Custom Scrollbar */
+        .chat-log::-webkit-scrollbar { width: 6px; }
+        .chat-log::-webkit-scrollbar-track { background: transparent; }
+        .chat-log::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+        .chat-log::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
+        .message-wrapper {
+            display: flex;
+            flex-direction: column;
+            max-width: 75%;
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+
+        .message-wrapper.self {
+            align-self: flex-end;
+            align-items: flex-end;
+        }
+
+        .message-wrapper.other {
+            align-self: flex-start;
+            align-items: flex-start;
+        }
+
+        .message-wrapper.system {
+            align-self: center;
+            align-items: center;
+            max-width: 90%;
+            margin: 10px 0;
+        }
+
+        .sender-name {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        .message {
+            padding: 12px 18px;
+            border-radius: 18px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            word-break: break-word;
+            position: relative;
+        }
+
+        .self .message {
+            background-color: var(--msg-self);
+            color: #fff;
+            border-bottom-right-radius: 4px;
+            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+        }
+
+        .other .message {
+            background-color: var(--msg-other);
+            color: #fff;
+            border-bottom-left-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .system .message {
+            background-color: transparent;
+            color: var(--sys-msg);
+            font-size: 0.85rem;
+            font-style: italic;
+            padding: 4px 12px;
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 99px;
+            background: rgba(0,0,0,0.2);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .input-area {
+            padding: 20px 30px;
+            background: rgba(15, 23, 42, 0.5);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 15px;
+        }
+
+        #chat-message-input {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 14px 20px;
+            border-radius: 99px;
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.2s;
+        }
+        
+        #chat-message-input:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        #chat-message-input:focus {
+            border-color: var(--accent);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        #chat-message-submit {
+            background: var(--accent);
+            color: white;
+            border: none;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+        }
+
+        #chat-message-submit:disabled {
+            background: var(--sys-msg);
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        #chat-message-submit:not(:disabled):hover {
+            background: var(--accent-hover);
+            transform: scale(1.05);
+        }
+
+        #chat-message-submit:not(:disabled):active {
+            transform: scale(0.95);
+        }
+
+        #chat-message-submit svg {
+            width: 20px;
+            height: 20px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            transform: translateX(-1px);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="chat-app">
+        <div class="header">
+            <h1>🎭 Stranger Chat</h1>
+            <div class="header-actions">
+                <div id="status-indicator" class="status-dot"></div>
+                <button id="btn-next" class="btn-next">Next</button>
+            </div>
+        </div>
+        
+        <div class="chat-log" id="chat-log">
+            <!-- Messages will appear here -->
+        </div>
+        
+        <div class="input-area">
+            <input id="chat-message-input" type="text" placeholder="Connecting to server..." autocomplete="off" disabled>
+            <button id="chat-message-submit" disabled>
+                <svg viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let chatSocket = null;
+        let isConnectedToStranger = false;
+
+        const chatLog = document.getElementById('chat-log');
+        const messageInput = document.getElementById('chat-message-input');
+        const messageSubmit = document.getElementById('chat-message-submit');
+        const btnNext = document.getElementById('btn-next');
+        const statusIndicator = document.getElementById('status-indicator');
+
+        function connectWebSocket() {
+            const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+            chatSocket = new WebSocket(protocol + window.location.host + '/ws/chat/');
+
+            chatSocket.onmessage = function(e) {
+                const data = JSON.parse(e.data);
+                
+                if (data.type === 'chat') {
+                    appendChatMessage(data.sender, data.message);
+                } else if (data.type === 'system') {
+                    appendSystemMessage(data.message);
+                    handleSystemAction(data.action);
+                }
+            };
+
+            chatSocket.onclose = function(e) {
+                console.error('Chat socket closed unexpectedly');
+                appendSystemMessage('Connection to server lost. Please refresh the page.');
+                setUIState('disconnected');
+            };
+            
+            chatSocket.onopen = function(e) {
+                // UI state is handled by the server's initial 'waiting' or 'connected' message
+            }
+        }
+
+        function handleSystemAction(action) {
+            if (action === 'waiting') {
+                setUIState('waiting');
+            } else if (action === 'connected') {
+                setUIState('connected');
+            } else if (action === 'disconnected') {
+                setUIState('disconnected');
+            }
+        }
+
+        function setUIState(state) {
+            if (state === 'waiting') {
+                isConnectedToStranger = false;
+                statusIndicator.className = 'status-dot'; // yellow
+                messageInput.disabled = true;
+                messageInput.placeholder = 'Waiting for a stranger...';
+                messageSubmit.disabled = true;
+            } else if (state === 'connected') {
+                isConnectedToStranger = true;
+                statusIndicator.className = 'status-dot connected'; // green
+                messageInput.disabled = false;
+                messageInput.placeholder = 'Type your message...';
+                messageSubmit.disabled = false;
+                messageInput.focus();
+            } else if (state === 'disconnected') {
+                isConnectedToStranger = false;
+                statusIndicator.className = 'status-dot disconnected'; // red
+                messageInput.disabled = true;
+                messageInput.placeholder = 'Stranger left the chat.';
+                messageSubmit.disabled = true;
+            }
+        }
+
+        function appendChatMessage(sender, message) {
+            const isSelf = sender === 'You';
+            
+            const wrapper = document.createElement('div');
+            wrapper.className = `message-wrapper ${isSelf ? 'self' : 'other'}`;
+            
+            if (!isSelf) {
+                const nameEl = document.createElement('div');
+                nameEl.className = 'sender-name';
+                nameEl.textContent = 'Stranger';
+                wrapper.appendChild(nameEl);
+            }
+            
+            const msgEl = document.createElement('div');
+            msgEl.className = 'message';
+            msgEl.textContent = message;
+            
+            wrapper.appendChild(msgEl);
+            chatLog.appendChild(wrapper);
+            scrollToBottom();
+        }
+
+        function appendSystemMessage(message) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'message-wrapper system';
+            
+            const msgEl = document.createElement('div');
+            msgEl.className = 'message';
+            msgEl.textContent = message;
+            
+            wrapper.appendChild(msgEl);
+            chatLog.appendChild(wrapper);
+            scrollToBottom();
+        }
+
+        function scrollToBottom() {
+            chatLog.scrollTop = chatLog.scrollHeight;
+        }
+
+        // Initialize connection
+        connectWebSocket();
+
+        // Event Listeners
+        messageInput.onkeyup = function(e) {
+            if (e.keyCode === 13) {  // enter
+                messageSubmit.click();
+            }
+        };
+
+        messageSubmit.onclick = function(e) {
+            const message = messageInput.value.trim();
+            if (message && chatSocket && chatSocket.readyState === WebSocket.OPEN && isConnectedToStranger) {
+                chatSocket.send(JSON.stringify({
+                    'action': 'message',
+                    'message': message
+                }));
+                messageInput.value = '';
+            }
+        };
+        
+        btnNext.onclick = function(e) {
+            if (chatSocket && chatSocket.readyState === WebSocket.OPEN) {
+                // Clear UI
+                chatLog.innerHTML = '';
+                chatSocket.send(JSON.stringify({
+                    'action': 'next'
+                }));
+            }
+        }
+    </script>
+</body>
+</html>

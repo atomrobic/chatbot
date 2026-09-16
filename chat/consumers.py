@@ -32,15 +32,17 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 }
             )
             
-            # Send welcome message to both in the room
-            await self.channel_layer.group_send(
-                self.room_group_name,
-                {
-                    "type": "system_message",
-                    "message": "You are now chatting with a stranger. Say Hi!",
-                    "action": "connected"
-                }
-            )
+            welcome_msg = {
+                "type": "system_message",
+                "message": "You are now chatting with a stranger. Say Hi!",
+                "action": "connected"
+            }
+            
+            # Send welcome message to myself directly
+            await self.channel_layer.send(self.channel_name, welcome_msg)
+            # Send welcome message to partner directly
+            await self.channel_layer.send(partner_channel_name, welcome_msg)
+            
         else:
             # Nobody is waiting, so I join the queue
             waiting_users.append(self.channel_name)

@@ -67,11 +67,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.leave_current_room_and_notify()
 
     async def receive(self, text_data):
+        global waiting_users
         text_data_json = json.loads(text_data)
         action = text_data_json.get("action")
         
         if action == "disconnect":
-            global waiting_users
             if self.channel_name in waiting_users:
                 waiting_users.remove(self.channel_name)
             await self.leave_current_room_and_notify()
@@ -84,7 +84,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
             
         if action == "next":
             # Leave current room, notify partner, and search again
-            global waiting_users
             if self.channel_name in waiting_users:
                 waiting_users.remove(self.channel_name)
             await self.leave_current_room_and_notify()
